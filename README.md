@@ -1,3 +1,7 @@
+# Adventure Site
+
+An interactive choose-your-own-adventure story for DnD — an advent calendar project.
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
