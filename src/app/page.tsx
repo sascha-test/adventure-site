@@ -23,7 +23,7 @@ export default async function Home() {
           ) : (
             <Link
               href="/login"
-              className="text-foreground/50 hover:text-ember transition-colors"
+              className="bg-ember text-background px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition-opacity"
             >
               Login
             </Link>
