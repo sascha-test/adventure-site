@@ -1,9 +1,35 @@
 import Image from "next/image";
+import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
+import LogoutButton from "@/components/logout-button";
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <main className="flex-1">
+        <nav className="flex justify-end px-6 py-4 text-sm">
+          {user ? (
+            <div className="flex items-center gap-4">
+              <span className="text-foreground/50">
+                Signed in as {user.email}
+              </span>
+              <LogoutButton />
+            </div>
+          ) : (
+            <Link
+              href="/login"
+              className="text-foreground/50 hover:text-ember transition-colors"
+            >
+              Login
+            </Link>
+          )}
+        </nav>
+
         <section className="flex flex-col items-center justify-center text-center px-6 py-32 border-b border-foreground/10">
           <Image
             src="/logo.jpeg"
