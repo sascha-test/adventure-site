@@ -1,3 +1,73 @@
+# Advent of Tales — Projekt-Briefing
+
+Interaktiver Choose-Your-Own-Adventure-Adventskalender im DnD-Setting (24 Tage, Dezember 2026). Jeden Tag ein neues Kapitel, Entscheidungen und Würfelchecks, die den weiteren Verlauf beeinflussen.
+
+## ⚠️ REMINDER (offene Aufgabe)
+- [ ] GitHub-Repo irgendwann auf **private** umstellen — spätestens sobald serverseitige Logik (service_role-Key!), echte Story-Inhalte oder Tages-Gating dazukommen, und vor dem Dezember-Live-Gang. Aktuell ist public okay (keine Secrets im Repo). Nach dem Umstellen: testen, ob Vercel weiterhin deployt (GitHub → Settings → Applications → Vercel → App-Zugriff auf das Repo prüfen).
+
+## Projekt-Stack
+- Next.js (TypeScript, Tailwind CSS v4, App Router, Turbopack)
+- Supabase (Auth mit Magic Links + Postgres-Datenbank — BEIDES EINGERICHTET)
+- Vercel (Hosting aktiv, eigene Domain verbunden)
+- GitHub-Repo: https://github.com/sascha-test/adventure-site
+
+## Projekt-Pfad
+/Users/saschapolarise/Documents/Test Project/adventure-site
+
+## Design / Branding
+- Color-Scheme "Ember & Moss"
+- Fonts: Domine (display/überschriften), Manrope (body/text)
+- Farben: background oklch(0.15 0.01 250), text oklch(0.97 0.005 250), ember (orange) oklch(0.62 0.14 45), moss (grün) oklch(0.62 0.14 150)
+- Logo: /public/logo.jpeg
+
+## Live-Status (Stand: 28.08.2026)
+- ✅ https://www.dungeonsandpages.com läuft komplett mit SSL (Vercel)
+- ✅ Login-Seite live: /login (Magic Link, orange "Login"-Button oben rechts)
+- ✅ Auth-Callback live: /auth/callback
+- ✅ Login-Test am 28.08.2026 erfolgreich: Magic-Link-Anfrage → Mail kam an → Klick → eingeloggt → Logout
+- DNS bei GoDaddy: A @ → 76.76.21.21, CNAME www → cname.vercel-dns.com (Nameserver NICHT ändern, MX = Google NICHT anfassen)
+
+## Supabase-Setup (fertig)
+- Projekt-Ref: pqtcmqpemoiaaljsupjx, Region Frankfurt (eu-central-1) — EU-Souveränität
+- Env-Vars (identisch in .env.local und Vercel, Production): NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+- Login-Methode: Magic Link (passwortlos)
+- Redirect-URLs: http://localhost:3000/auth/callback + https://www.dungeonsandpages.com/auth/callback (Production getestet)
+- Vor Dezember: "Allow new users to sign up" deaktivieren + User manuell anlegen (Option A, Familien-/Freunde-Zugang)
+
+## Roadmap & Fortschritt
+1. ✅ Setup & Landingpage
+2. ✅ Git/GitHub
+3. ✅ Deploy auf Vercel — Domain + SSL laufen
+4. ✅ Supabase-Setup + Login (Magic Link) — Login-Test am 28.08.2026 bestanden
+5. ⬜ Story-Engine — JSON-basierte Szenenstruktur, Verzweigungen, Flaggen ← NÄCHSTER SCHRITT
+6. ⬜ Tages-Gating (serverseitig) — nur Inhalte bis "heute" freischalten
+7. ⬜ Charakter- & Würfelsystem — eigenes Regelwerk (d20-basiert, Stats, HP, Kampf)
+8. ⬜ Fortschritts-Tracking in DB — Tag, Choices, Stats, HP pro User (Tabelle game_progress mit user_id, RLS aktivieren!)
+9. ⬜ Echte Story-Inhalte einpflegen — vorhandenes Material des Users
+10. ⬜ Polish — Styling, Mobile, Illustrationen
+
+## Wichtige Learnings / Konventionen
+- Workflow: Code ändern → git add → git commit → git push. NUR der push löst das Vercel-Deployment aus. Immer pushen!
+- Jeder push auf main geht live auf Vercel. Andere Branches = Preview-URLs.
+- Next.js 16.3.0: Vor Code-Änderungen die Docs in node_modules/next/dist/docs/ lesen (breaking changes gegenüber älteren Versionen, z.B. await cookies()).
+- Checks vor jedem Commit: npx tsc --noEmit && npm run lint && npm run build
+- .env.local liegt im Projekt-Root (nicht in src/), ist in .gitignore — NIEMALS committen (Repo ist public!)
+- Route Handlers: src/app/.../route.ts (export GET etc., nicht cached)
+- Vercel Env-Vars: aktuell nur für Production gesetzt — falls Preview-Deployments genutzt werden, auch für Preview/Development setzen
+- Mac-DNS-Cache leeren (falls nötig): sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder
+
+## Entscheidungen
+- 24 Tage (klassischer Adventskalender)
+- Regelwerk: eigenes, vereinfachtes (d20-basiert, Stats, HP, Kampf)
+- Speicherung: Login + Datenbank (Supabase), nicht nur Browser-Speicher
+- Login: Magic Link (passwortlos)
+- Zugang: jetzt offen zum Entwickeln, vor Dezember Registrierung deaktivieren + User manuell anlegen (Option A)
+- Sprache der Story-Inhalte: Englisch
+- Zielgruppe zuerst: Familie & Freunde
+
+## Über den Nutzer
+Anfänger — klar erklären, nachfragen bevor Dinge geändert werden, technische Begriffe nicht als bekannt voraussetzen.
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 # This is NOT the Next.js you know
