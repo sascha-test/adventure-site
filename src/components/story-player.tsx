@@ -5,9 +5,16 @@ import Link from "next/link";
 import { choose, resolveScene, startNextDay, startStory } from "@/story/engine";
 import type { GameState, Story } from "@/story/types";
 
-export default function StoryPlayer({ story }: { story: Story }) {
+export default function StoryPlayer({
+  story,
+  unlockedDay,
+}: {
+  story: Story;
+  unlockedDay: number;
+}) {
   const [state, setState] = useState<GameState>(() => startStory(story));
   const scene = useMemo(() => resolveScene(story, state), [story, state]);
+  const nextDayUnlocked = state.currentDay < unlockedDay;
 
   const restart = () => setState(startStory(story));
 
@@ -76,16 +83,25 @@ export default function StoryPlayer({ story }: { story: Story }) {
                 <p className="text-xl font-semibold text-ember">
                   Day {state.currentDay} complete
                 </p>
-                <p className="text-sm text-foreground/50">
-                  In December, the next door only opens on its real day. For
-                  now, you may continue.
-                </p>
-                <button
-                  onClick={() => setState(startNextDay(story, state))}
-                  className="px-6 py-3 rounded-lg bg-ember text-background font-semibold hover:opacity-90 transition-opacity"
-                >
-                  Begin Day {state.currentDay + 1}
-                </button>
+                {nextDayUnlocked ? (
+                  <>
+                    <p className="text-sm text-foreground/50">
+                      In December, the next door only opens on its real day.
+                      For now, you may continue.
+                    </p>
+                    <button
+                      onClick={() => setState(startNextDay(story, state))}
+                      className="px-6 py-3 rounded-lg bg-ember text-background font-semibold hover:opacity-90 transition-opacity"
+                    >
+                      Begin Day {state.currentDay + 1}
+                    </button>
+                  </>
+                ) : (
+                  <p className="text-sm text-foreground/50">
+                    The next door is still sealed. Come back tomorrow to
+                    continue the story.
+                  </p>
+                )}
               </div>
             ) : (
               <div className="mt-10 pt-8 border-t border-foreground/10 space-y-3">

@@ -128,12 +128,14 @@ export function startNextDay(story: Story, state: GameState): GameState {
 export function validateStory(story: Story): string[] {
   const errors: string[] = [];
   const ids = new Set<string>();
+  const scenesById = new Map<string, Scene>();
 
   for (const scene of story.scenes) {
     if (ids.has(scene.id)) {
       errors.push(`Duplicate scene id: "${scene.id}"`);
     }
     ids.add(scene.id);
+    scenesById.set(scene.id, scene);
   }
 
   if (!story.scenes.some((scene) => scene.id === story.startSceneId)) {
@@ -150,6 +152,12 @@ export function validateStory(story: Story): string[] {
       if (choice.kind && choice.kind !== "decision" && !choice.check) {
         errors.push(
           `Scene "${scene.id}" has a "${choice.kind}" choice without check data`,
+        );
+      }
+      const target = scenesById.get(choice.next);
+      if (target && target.day > scene.day) {
+        errors.push(
+          `Scene "${scene.id}" (day ${scene.day}) links forward to "${choice.next}" (day ${target.day}) — day transitions must go through startOfDay entries`,
         );
       }
     }

@@ -39,8 +39,8 @@ Interaktiver Choose-Your-Own-Adventure-Adventskalender im DnD-Setting (24 Tage, 
 2. ✅ Git/GitHub
 3. ✅ Deploy auf Vercel — Domain + SSL laufen
 4. ✅ Supabase-Setup + Login (Magic Link) — Login-Test am 28.08.2026 bestanden
-5. ⬜ Story-Engine — JSON-basierte Szenenstruktur, Verzweigungen, Flaggen ← NÄCHSTER SCHRITT
-6. ⬜ Tages-Gating (serverseitig) — nur Inhalte bis "heute" freischalten
+5. ✅ Story-Engine — JSON-basierte Szenenstruktur, Verzweigungen, Flaggen (Demo: /story, 5 Tage)
+6. ✅ Tages-Gating (serverseitig) — Szenen späterer Tage werden gar nicht an den Browser geschickt; Start 01.12.2026, Zeitzone Europe/Berlin; Preview-Link: /story?preview=STORY_PREVIEW_TOKEN (Env-Var in .env.local + Vercel, NICHT im Code — Repo ist public)
 7. ⬜ Charakter- & Würfelsystem — eigenes Regelwerk (d20-basiert, Stats, HP, Kampf)
 8. ⬜ Fortschritts-Tracking in DB — Tag, Choices, Stats, HP pro User (Tabelle game_progress mit user_id, RLS aktivieren!)
 9. ⬜ Echte Story-Inhalte einpflegen — vorhandenes Material des Users
