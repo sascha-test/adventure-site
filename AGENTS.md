@@ -49,6 +49,13 @@ Interaktiver Choose-Your-Own-Adventure-Adventskalender im DnD-Setting (24 Tage, 
 11. ⬜ Mobile-Optimierung — primäres Spielgerät ist das Smartphone: Layout & Typografie auf kleinen Screens, große gut tippbare Entscheidungs-Buttons, Performance/Ladezeit, Tests auf echten iOS-/Android-Geräten
 12. ⬜ Sprachen-Entscheidung — Mehrsprachigkeit (insbesondere Deutsch neben Englisch) gegen Projektende bewerten: Aufwand für Story-Inhalte, UI-Texte, Würfel-Feedback; erst entscheiden, wenn Rest steht
 
+## Geplante Projekt-Skills (.opencode/skills/<name>/SKILL.md)
+Je Skill anlegen, wenn der zugehörige Schritt ansteigt — nicht vorher:
+- **story-authoring** — Szenen-Format (id/day/choices/requires/effects/endsDay), Validator-Regeln, Erzählstil, Preview-Test → zu Schritt 9 (echte Story-Inhalte). Achtung: Repo ist public — NIE Buch-Spoiler in die Projekt-Skill schreiben, nur Format-/Stil-Konventionen
+- **web-design** — Design-System (Ember & Moss, Domine/Manrope) + Design-Ideen des Users gegen den statischen Look (Animationen, Übergänge, Stimmung) → zu Schritt 10 (Polish); anlegen, sobald die Ideen des Users feststehen
+- **dice-rules** — das ausgearbeitete Regelwerk (Stats, Check-Format, Death Pages, Kampfregeln, Schwierigkeits-Leitfaden fürs Buch) → zu Schritt 7; anlegen NACH Durchsprache des Buch-Regelkonzepts und Umsetzung (Etappe 2/3)
+- **mobile-testing** — Checkliste für Schritt 11: Tests auf echten iOS-/Android-Geräten, Tippgrößen, Breakpoints, Performance → anlegen, wenn Mobile-Optimierung startet
+
 ## Wichtige Learnings / Konventionen
 - Workflow: Code ändern → git add → git commit → git push. NUR der push löst das Vercel-Deployment aus. Immer pushen!
 - Jeder push auf main geht live auf Vercel. Andere Branches = Preview-URLs.
