@@ -8,15 +8,26 @@ import type { GameState, Story } from "@/story/types";
 export default function StoryPlayer({
   story,
   unlockedDay,
+  initialState,
 }: {
   story: Story;
   unlockedDay: number;
+  initialState: GameState;
 }) {
-  const [state, setState] = useState<GameState>(() => startStory(story));
+  const [state, setState] = useState<GameState>(initialState);
   const scene = useMemo(() => resolveScene(story, state), [story, state]);
   const nextDayUnlocked = state.currentDay < unlockedDay;
 
-  const restart = () => setState(startStory(story));
+  const update = (next: GameState) => {
+    setState(next);
+    fetch("/api/progress", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(next),
+    }).catch((error) => console.error("Progress save failed:", error));
+  };
+
+  const restart = () => update(startStory(story));
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
@@ -90,7 +101,7 @@ export default function StoryPlayer({
                       For now, you may continue.
                     </p>
                     <button
-                      onClick={() => setState(startNextDay(story, state))}
+                      onClick={() => update(startNextDay(story, state))}
                       className="px-6 py-3 rounded-lg bg-ember text-background font-semibold hover:opacity-90 transition-opacity"
                     >
                       Begin Day {state.currentDay + 1}
@@ -108,7 +119,7 @@ export default function StoryPlayer({
                 {scene.choices.map((choice, index) => (
                   <button
                     key={index}
-                    onClick={() => setState(choose(story, state, index))}
+                    onClick={() => update(choose(story, state, index))}
                     className="w-full text-left px-4 py-3 rounded-lg border border-foreground/10 bg-foreground/5 hover:border-ember hover:bg-foreground/10 transition-colors"
                   >
                     {choice.text}

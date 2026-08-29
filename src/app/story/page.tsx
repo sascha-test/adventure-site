@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import StoryPlayer from "@/components/story-player";
 import StoryWaiting from "@/components/story-waiting";
-import { validateStory } from "@/story/engine";
+import { createClient } from "@/lib/supabase/server";
+import { isGameState, startStory, validateStory } from "@/story/engine";
 import { demoStory } from "@/story/demo-story";
 import {
   filterStoryForDay,
   getUnlockedDay,
   maxStoryDay,
 } from "@/story/gating";
+import type { GameState } from "@/story/types";
 
 export const dynamic = "force-dynamic";
 
@@ -43,10 +46,40 @@ export default async function StoryPage({
     return <StoryWaiting now={now} />;
   }
 
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const visibleStory = filterStoryForDay(demoStory, unlockedDay);
+
+  const { data: saved } = await supabase
+    .from("game_progress")
+    .select("state")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  let initialState: GameState;
+  if (
+    saved?.state &&
+    isGameState(saved.state) &&
+    saved.state.storyId === demoStory.id &&
+    visibleStory.scenes.some((s) => s.id === saved.state.currentSceneId)
+  ) {
+    initialState = saved.state;
+  } else {
+    initialState = startStory(visibleStory);
+  }
+
   return (
     <StoryPlayer
-      story={filterStoryForDay(demoStory, unlockedDay)}
+      story={visibleStory}
       unlockedDay={unlockedDay}
+      initialState={initialState}
     />
   );
 }

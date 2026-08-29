@@ -125,6 +125,20 @@ export function startNextDay(story: Story, state: GameState): GameState {
   };
 }
 
+export function isGameState(value: unknown): value is GameState {
+  if (typeof value !== "object" || value === null) return false;
+  const v = value as Record<string, unknown>;
+  return (
+    typeof v.storyId === "string" &&
+    typeof v.currentSceneId === "string" &&
+    typeof v.currentDay === "number" &&
+    Array.isArray(v.flags) &&
+    v.flags.every((f) => typeof f === "string") &&
+    Array.isArray(v.visitedScenes) &&
+    Array.isArray(v.choiceLog)
+  );
+}
+
 export function validateStory(story: Story): string[] {
   const errors: string[] = [];
   const ids = new Set<string>();

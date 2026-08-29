@@ -43,9 +43,10 @@ Interaktiver Choose-Your-Own-Adventure-Adventskalender im DnD-Setting (24 Tage, 
 5. ✅ Story-Engine — JSON-basierte Szenenstruktur, Verzweigungen, Flaggen (Demo: /story, 5 Tage)
 6. ✅ Tages-Gating (serverseitig) — Szenen späterer Tage werden gar nicht an den Browser geschickt; Start 01.12.2026, Zeitzone Europe/Berlin; Preview-Link: /story?preview=STORY_PREVIEW_TOKEN (Env-Var in .env.local + Vercel, NICHT im Code — Repo ist public)
 7. ⬜ Charakter- & Würfelsystem — eigenes Regelwerk (d20-basiert, Stats, HP, Kampf)
-8. ⬜ Fortschritts-Tracking in DB — Tag, Choices, Stats, HP pro User (Tabelle game_progress mit user_id, RLS aktivieren!)
+8. ✅ Fortschritts-Tracking in DB — Tabelle game_progress (user_id PK, state jsonb, RLS: nur eigene Zeile, Migration: supabase/migrations/001_game_progress.sql); /story erfordert Login; laden serverseitig, speichern pro Klick via POST /api/progress; ungültige/gesperrte Stände werden automatisch auf Tag 1 zurückgesetzt
 9. ⬜ Echte Story-Inhalte einpflegen — vorhandenes Material des Users
 10. ⬜ Polish — Styling, Mobile, Illustrationen
+11. ⬜ Sprachen-Entscheidung — Mehrsprachigkeit (insbesondere Deutsch neben Englisch) gegen Projektende bewerten: Aufwand für Story-Inhalte, UI-Texte, Würfel-Feedback; erst entscheiden, wenn Rest steht
 
 ## Wichtige Learnings / Konventionen
 - Workflow: Code ändern → git add → git commit → git push. NUR der push löst das Vercel-Deployment aus. Immer pushen!
@@ -63,7 +64,7 @@ Interaktiver Choose-Your-Own-Adventure-Adventskalender im DnD-Setting (24 Tage, 
 - Speicherung: Login + Datenbank (Supabase), nicht nur Browser-Speicher
 - Login: Magic Link (passwortlos)
 - Zugang: jetzt offen zum Entwickeln, vor Dezember Registrierung deaktivieren + User manuell anlegen (Option A)
-- Sprache der Story-Inhalte: Englisch
+- Sprache der Story-Inhalte: Englisch (Mehrsprachigkeit — v. a. Deutsch — als offene Option, neu bewerten am Projektende, siehe Roadmap-Punkt 11)
 - Zielgruppe zuerst: Familie & Freunde
 
 ## Über den Nutzer
