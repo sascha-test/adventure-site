@@ -1,33 +1,34 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState, useTransition } from "react";
 import Link from "next/link";
-import { choose, resolveScene, startNextDay, startStory } from "@/story/engine";
-import type { GameState, Story } from "@/story/types";
+import { beginNextDay, makeChoice, restartStory } from "@/story/actions";
+import type { ActionResult, TurnResult } from "@/story/types";
 
 export default function StoryPlayer({
-  story,
-  unlockedDay,
-  initialState,
+  initial,
+  preview,
 }: {
-  story: Story;
-  unlockedDay: number;
-  initialState: GameState;
+  initial: TurnResult;
+  preview?: string;
 }) {
-  const [state, setState] = useState<GameState>(initialState);
-  const scene = useMemo(() => resolveScene(story, state), [story, state]);
-  const nextDayUnlocked = state.currentDay < unlockedDay;
+  const [turn, setTurn] = useState<TurnResult>(initial);
+  const [error, setError] = useState<string | null>(null);
+  const [pending, startTransition] = useTransition();
 
-  const update = (next: GameState) => {
-    setState(next);
-    fetch("/api/progress", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(next),
-    }).catch((error) => console.error("Progress save failed:", error));
+  const { scene, state } = turn;
+
+  const run = (action: () => Promise<ActionResult>) => {
+    setError(null);
+    startTransition(async () => {
+      const result = await action();
+      if (result.ok) {
+        setTurn(result);
+      } else {
+        setError(result.error);
+      }
+    });
   };
-
-  const restart = () => update(startStory(story));
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
@@ -65,6 +66,12 @@ export default function StoryPlayer({
               ))}
             </div>
 
+            {error && (
+              <p className="mt-6 text-sm text-ember bg-ember/10 border border-ember/30 rounded-lg px-4 py-3">
+                {error}
+              </p>
+            )}
+
             {scene.endsStory ? (
               <div className="mt-10 pt-8 border-t border-foreground/10 text-center space-y-4">
                 <p className="text-xl font-semibold text-moss">
@@ -76,8 +83,9 @@ export default function StoryPlayer({
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
                   <button
-                    onClick={restart}
-                    className="px-6 py-3 rounded-lg bg-ember text-background font-semibold hover:opacity-90 transition-opacity"
+                    onClick={() => run(() => restartStory(preview))}
+                    disabled={pending}
+                    className="px-6 py-3 rounded-lg bg-ember text-background font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-wait"
                   >
                     Play again
                   </button>
@@ -94,15 +102,16 @@ export default function StoryPlayer({
                 <p className="text-xl font-semibold text-ember">
                   Day {state.currentDay} complete
                 </p>
-                {nextDayUnlocked ? (
+                {turn.nextDayUnlocked ? (
                   <>
                     <p className="text-sm text-foreground/50">
                       In December, the next door only opens on its real day.
                       For now, you may continue.
                     </p>
                     <button
-                      onClick={() => update(startNextDay(story, state))}
-                      className="px-6 py-3 rounded-lg bg-ember text-background font-semibold hover:opacity-90 transition-opacity"
+                      onClick={() => run(() => beginNextDay(preview))}
+                      disabled={pending}
+                      className="px-6 py-3 rounded-lg bg-ember text-background font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-wait"
                     >
                       Begin Day {state.currentDay + 1}
                     </button>
@@ -119,13 +128,20 @@ export default function StoryPlayer({
                 {scene.choices.map((choice, index) => (
                   <button
                     key={index}
-                    onClick={() => update(choose(story, state, index))}
-                    className="w-full text-left px-4 py-3 rounded-lg border border-foreground/10 bg-foreground/5 hover:border-ember hover:bg-foreground/10 transition-colors"
+                    onClick={() => run(() => makeChoice(index, preview))}
+                    disabled={pending}
+                    className="w-full text-left px-4 py-3 rounded-lg border border-foreground/10 bg-foreground/5 hover:border-ember hover:bg-foreground/10 transition-colors disabled:opacity-50 disabled:cursor-wait"
                   >
                     {choice.text}
                   </button>
                 ))}
               </div>
+            )}
+
+            {pending && (
+              <p className="mt-4 text-center text-xs text-foreground/40" role="status">
+                …
+              </p>
             )}
           </section>
 

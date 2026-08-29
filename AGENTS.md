@@ -42,8 +42,8 @@ Interaktiver Choose-Your-Own-Adventure-Adventskalender im DnD-Setting (24 Tage, 
 4. ✅ Supabase-Setup + Login (Magic Link) — Login-Test am 28.08.2026 bestanden
 5. ✅ Story-Engine — JSON-basierte Szenenstruktur, Verzweigungen, Flaggen (Demo: /story, 5 Tage)
 6. ✅ Tages-Gating (serverseitig) — Szenen späterer Tage werden gar nicht an den Browser geschickt; Start 01.12.2026, Zeitzone Europe/Berlin; Preview-Link: /story?preview=STORY_PREVIEW_TOKEN (Env-Var in .env.local + Vercel, NICHT im Code — Repo ist public)
-7. ⬜ Charakter- & Würfelsystem — eigenes Regelwerk (d20-basiert, Stats, HP, Kampf) ← NÄCHSTER SCHRITT
-8. ✅ Fortschritts-Tracking in DB — Tabelle game_progress (user_id PK, state jsonb, RLS: nur eigene Zeile, Migration: supabase/migrations/001_game_progress.sql); /story erfordert Login; laden serverseitig, speichern pro Klick via POST /api/progress; ungültige/gesperrte Stände werden automatisch auf Tag 1 zurückgesetzt
+7. 🔨 Charakter- & Würfelsystem — eigenes Regelwerk (d20-basiert, Stats, HP, Kampf) — Etappe 1 ✅ (28.08.2026): Server-Architektur (s. Entscheidungen); Regeln (Stats/HP/Checks/Kampf/Death Pages) folgen nach gemeinsamer Durchsprache des Buch-Regelkonzepts
+8. ✅ Fortschritts-Tracking in DB — Tabelle game_progress (user_id PK, state jsonb, RLS: nur eigene Zeile, Migration: supabase/migrations/001_game_progress.sql); /story erfordert Login; Laden UND Speichern komplett serverseitig über Server Actions (src/story/actions.ts — der Browser erhält nur die aktuelle Szene + eigener Spielstand, nie die Story-JSON; /api/progress entfernt); ungültige/gesperrte Stände werden automatisch auf Tag 1 zurückgesetzt
 9. ⬜ Echte Story-Inhalte einpflegen — vorhandenes Material des Users
 10. ⬜ Polish — Styling, Illustrationen
 11. ⬜ Mobile-Optimierung — primäres Spielgerät ist das Smartphone: Layout & Typografie auf kleinen Screens, große gut tippbare Entscheidungs-Buttons, Performance/Ladezeit, Tests auf echten iOS-/Android-Geräten
@@ -56,12 +56,16 @@ Interaktiver Choose-Your-Own-Adventure-Adventskalender im DnD-Setting (24 Tage, 
 - Checks vor jedem Commit: npx tsc --noEmit && npm run lint && npm run build
 - .env.local liegt im Projekt-Root (nicht in src/), ist in .gitignore — NIEMALS committen (Repo ist public!)
 - Route Handlers: src/app/.../route.ts (export GET etc., nicht cached)
+- Server Actions: src/story/actions.ts mit "use server" — jeder Spielzug (Entscheidung, Tageswechsel, Neustart) läuft serverseitig: DB-Stand laden → prüfen (Login, Tag-Gating, Preview-Token, Szene/Choice gültig) → anwenden → speichern → nur das Ergebnis (TurnResult) an den Browser. Basis für faires Würfeln in Schritt 7.
+- Achtung bei `rm -rf .next`: Danach kennt `npx tsc --noEmit` die von Next generierten Typen (PageProps etc.) erst wieder nach `npm run build` oder `npm run dev` — Reihenfolge also erst builden, dann tsc.
 - Vercel Env-Vars: aktuell nur für Production gesetzt — falls Preview-Deployments genutzt werden, auch für Preview/Development setzen
 - Mac-DNS-Cache leeren (falls nötig): sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder
 
 ## Entscheidungen
 - 24 Tage (klassischer Adventskalender)
 - Regelwerk: eigenes, vereinfachtes (d20-basiert, Stats, HP, Kampf)
+- Architektur (28.08.2026, „Variante A"): komplette Server-Regie — Server Actions, DB ist die einzige Wahrheit, Würfeln nur serverseitig (crypto-Zufall), keine Story-JSON im Browser, Client schickt nie Spielstände, sondern nur Klick-Intents
+- Regelwerk-Vorgaben aus dem Buch (28.08.2026): keine automatische Heilung über Nacht (nur Story-Momente heilen); Tod ist real — „Death Pages" mit bis zu 3 Wiederbelebungen + bleibende Mali; Details zu Stats/Check-Misserfolg/Charakter-Erstellung im Buchkonzept des Users — gemeinsam durchgehen, bevor sie eingebaut werden
 - Speicherung: Login + Datenbank (Supabase), nicht nur Browser-Speicher
 - Login: Magic Link (passwortlos)
 - Zugang: jetzt offen zum Entwickeln, vor Dezember Registrierung deaktivieren + User manuell anlegen (Option A)

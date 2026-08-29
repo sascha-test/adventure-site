@@ -67,3 +67,13 @@ export interface ResolvedScene {
   endsDay: boolean;
   endsStory: boolean;
 }
+
+export interface TurnResult {
+  scene: ResolvedScene;
+  state: GameState;
+  nextDayUnlocked: boolean;
+}
+
+export type ActionResult =
+  | ({ ok: true } & TurnResult)
+  | { ok: false; error: string };
