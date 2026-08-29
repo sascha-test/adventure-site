@@ -30,6 +30,7 @@ Interaktiver Choose-Your-Own-Adventure-Adventskalender im DnD-Setting (24 Tage, 
 ## Supabase-Setup (fertig)
 - Projekt-Ref: pqtcmqpemoiaaljsupjx, Region Frankfurt (eu-central-1) — EU-Souveränität
 - Env-Vars (identisch in .env.local und Vercel, Production): NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+- Supabase-Integration in Vercel verknüpft (28.08.2026): hat zusätzlich POSTGRES_URL, POSTGRES_PASSWORD, SUPABASE_* (inkl. SERVICE_ROLE_KEY, JWT_SECRET, NEXT_PUBLIC_SUPABASE_ANON_KEY) in Vercel angelegt. Code nutzt diese NICHT — sie sind server-only (kein NEXT_PUBLIC_-Präfix außer ANON_KEY) und ungenutzt. service_role/JWT_SECRET dürfen niemals clientseitig verwendet werden.
 - Login-Methode: Magic Link (passwortlos)
 - Redirect-URLs: http://localhost:3000/auth/callback + https://www.dungeonsandpages.com/auth/callback (Production getestet)
 - Vor Dezember: "Allow new users to sign up" deaktivieren + User manuell anlegen (Option A, Familien-/Freunde-Zugang)
