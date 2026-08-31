@@ -56,6 +56,12 @@ Je Skill anlegen, wenn der zugehörige Schritt ansteigt — nicht vorher:
 - **dice-rules** — das ausgearbeitete Regelwerk (Stats, Check-Format, Death Pages, Kampfregeln, Schwierigkeits-Leitfaden fürs Buch) → zu Schritt 7; anlegen NACH Durchsprache des Buch-Regelkonzepts und Umsetzung (Etappe 2/3)
 - **mobile-testing** — Checkliste für Schritt 11: Tests auf echten iOS-/Android-Geräten, Tippgrößen, Breakpoints, Performance → anlegen, wenn Mobile-Optimierung startet
 
+**Installierte externe Skills (28.08.2026, via `npx skills add … --copy` — liegen in .agents/skills/, Versionen/Quellen in skills-lock.json, Updates via `npx skills update`):**
+- **supabase** + **supabase-postgres-best-practices** (offiziell, supabase/agent-skills) — VOR jeder DB-/RLS-/Migrations-/supabase-js-Arbeit laden
+- **ui-animation** (mblode/agent-skills) — zu Schritt 10: Animations-Regeln (nur transform/opacity, prefers-reduced-motion, CSS-first)
+- **impeccable** (pbakaus/impeccable) — zu Schritt 10: kompletter Design-Workflow (critique/audit/polish/animate/typeset/…, mit Next.js-Support)
+- Hinweise: opencode lädt neue Skills erst nach einem Neustart. Impeccable-Telemetrie (nur beim „Concept-Roll"-Feature) abschaltbar via `IMPECCABLE_NO_TELEMETRY=1`; Bildgenerierung braucht einen OpenAI-Key (nicht konfiguriert → ungenutzt). Skills sind Anweisungen von Dritten — bei Updates Inhalte wieder prüfen.
+
 ## Wichtige Learnings / Konventionen
 - Workflow: Code ändern → git add → git commit → git push. NUR der push löst das Vercel-Deployment aus. Immer pushen!
 - Jeder push auf main geht live auf Vercel. Andere Branches = Preview-URLs.
