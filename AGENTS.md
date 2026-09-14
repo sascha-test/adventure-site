@@ -45,7 +45,7 @@ Interaktiver Choose-Your-Own-Adventure-Adventskalender im DnD-Setting (24 Tage, 
 7. 🔨 Charakter- & Würfelsystem — eigenes Regelwerk (d20-basiert, Stats, HP, Kampf) — Etappe 1 ✅ (28.08.2026): Server-Architektur (s. Entscheidungen); Regeln (Stats/HP/Checks/Kampf/Death Pages) folgen nach gemeinsamer Durchsprache des Buch-Regelkonzepts
 8. ✅ Fortschritts-Tracking in DB — Tabelle game_progress (user_id PK, state jsonb, RLS: nur eigene Zeile, Migration: supabase/migrations/001_game_progress.sql); /story erfordert Login; Laden UND Speichern komplett serverseitig über Server Actions (src/story/actions.ts — der Browser erhält nur die aktuelle Szene + eigener Spielstand, nie die Story-JSON; /api/progress entfernt); ungültige/gesperrte Stände werden automatisch auf Tag 1 zurückgesetzt
 9. ⬜ Echte Story-Inhalte einpflegen — vorhandenes Material des Users
-10. ⬜ Polish — Styling, Illustrationen
+10. ⬜ Polish — Styling, Illustrationen — Grafikstil FESTGELEGT (14.09.2026): **Pixel-Art** via PixelLab (pixellab.ai) für Charaktere + Animationen (walk/attack/idle), Health-Bars, UI-Elemente (Buttons, Menü) und den overall Vibe; Ember-&-Moss-Farben als Palette/Referenz mitgeben (Style-Konsistenz per Referenzbild); PixelLab hat MCP-Server + API — bei Schritt-10-Start einrichten (Konto + Token), dann Assets direkt aus dem Agenten-Workflow generieren; PixelLab-Gratis-Tier: 40 Generationen zum Testen, Paid ab $12/Monat
 11. ⬜ Mobile-Optimierung — primäres Spielgerät ist das Smartphone: Layout & Typografie auf kleinen Screens, große gut tippbare Entscheidungs-Buttons, Performance/Ladezeit, Tests auf echten iOS-/Android-Geräten
 12. ⬜ Sprachen-Entscheidung — Mehrsprachigkeit (insbesondere Deutsch neben Englisch) gegen Projektende bewerten: Aufwand für Story-Inhalte, UI-Texte, Würfel-Feedback; erst entscheiden, wenn Rest steht
 
@@ -82,6 +82,7 @@ Je Skill anlegen, wenn der zugehörige Schritt ansteigt — nicht vorher:
 - Speicherung: Login + Datenbank (Supabase), nicht nur Browser-Speicher
 - Login: Magic Link (passwortlos)
 - Zugang: jetzt offen zum Entwickeln, vor Dezember Registrierung deaktivieren + User manuell anlegen (Option A)
+- Grafikstil (14.09.2026): Pixel-Art für alle grafischen Elemente (Charaktere, Animationen, Health-Bars, UI, Szenen) — Tool der Wahl: PixelLab (Pixel-Asset-Spezialist: Style-Konsistenz per Referenzbild, Animation per Text/Skelett, MCP + Python-SDK); Higgsfield evaluiert und verworfen (Video-/Marketing-Fokus, Credit-Abo ohne Roll-over)
 - Sprache der Story-Inhalte: Englisch (Mehrsprachigkeit — v. a. Deutsch — als offene Option, neu bewerten am Projektende, siehe Roadmap-Punkt 12)
 - Zielgruppe zuerst: Familie & Freunde
 
